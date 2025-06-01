@@ -1,19 +1,12 @@
 ﻿namespace List;
 
-class ListNode<T>
+internal class ListNode<T>(T value, ListNode<T>? next)
 {
-    public T Value { get; set; }
+    public T Value { get; set; } = value;
 
-    public ListNode<T>? Next { get; set; }
+    public ListNode<T>? Next { get; set; } = next;
 
-    public ListNode(T value)
+    public ListNode(T value) : this(value, null)
     {
-        Value = value;
-    }
-
-    public ListNode(T value, ListNode<T>? next)
-    {
-        Value = value;
-        Next = next;
     }
 }

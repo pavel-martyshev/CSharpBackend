@@ -2,13 +2,13 @@
 
 internal class Program
 {
-    static void Main(string[] args)
+    public static void Main(string[] args)
     {
         SinglyLinkedList<int> list1 = new();
         list1.AddFirst(1);
         list1.AddByIndex(1, 2);
 
-        SinglyLinkedList<int> list2 = list1.Copy();
+        var list2 = list1.Copy();
         Console.WriteLine(list2);
 
         list1.Reverse();

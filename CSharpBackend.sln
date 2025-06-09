@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogTask", "LogTask\LogTask.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdoNet", "AdoNet\AdoNet.csproj", "{AF311337-9CD9-47AC-8E19-EF0576287184}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransactionTask", "TransactionTask\TransactionTask.csproj", "{8C6DFFB1-7CBC-49A6-A25A-3774C7D5B846}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{AF311337-9CD9-47AC-8E19-EF0576287184}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF311337-9CD9-47AC-8E19-EF0576287184}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF311337-9CD9-47AC-8E19-EF0576287184}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C6DFFB1-7CBC-49A6-A25A-3774C7D5B846}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C6DFFB1-7CBC-49A6-A25A-3774C7D5B846}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C6DFFB1-7CBC-49A6-A25A-3774C7D5B846}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C6DFFB1-7CBC-49A6-A25A-3774C7D5B846}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

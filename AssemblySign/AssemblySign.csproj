@@ -50,9 +50,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PointForSIgn\PointForSIgn.csproj">
+    <ProjectReference Include="..\PointForSIgn\PointForSign.csproj">
       <Project>{f2abe43d-535b-4e4f-8e0e-73ffe8772c41}</Project>
-      <Name>PointForSIgn</Name>
+      <Name>PointForSign</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

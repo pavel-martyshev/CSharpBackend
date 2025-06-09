@@ -1,4 +1,4 @@
-﻿namespace PointForSIgn
+﻿namespace PointForSign
 {
     public class Point
     {

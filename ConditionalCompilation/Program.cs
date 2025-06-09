@@ -5,7 +5,6 @@
         public static void Main(string[] args)
         {
             #region ConstantsDeclaration
-
 #if DEBUG
             const int x = 1;
             const int y = 2;

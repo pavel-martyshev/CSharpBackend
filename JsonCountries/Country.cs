@@ -1,13 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿namespace JsonCountries;
 
-namespace JsonCountries;
-
-public class Country(string name, string capital, double currencies)
+public class Country(string name, List<Dictionary<string, string>> currencies, int population)
 {
-    [JsonProperty("country")]
     public string Name { get; set; } = name;
 
-    public string Currency { get; set; } = capital;
+    public List<Dictionary<string, string>> Currencies { get; set; } = currencies;
 
-    public double Population { get; set; } = currencies;
+    public int Population { get; set; } = population;
 }

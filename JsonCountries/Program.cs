@@ -12,15 +12,20 @@ internal class Program
 
         ArgumentNullException.ThrowIfNull(countries);
 
-        Console.WriteLine("Суммарная численность по всем странам:");
-        Console.WriteLine(countries.Where(c => !double.IsNaN(c.Population)).Sum(c => c.Population));
+        Console.WriteLine($"Суммарная численность по всем странам - {countries.Sum(c => c.Population)}");
 
         Console.WriteLine();
 
+
         Console.WriteLine("Перечень всех валют:");
         Console.WriteLine(string.Join(
-            Environment.NewLine,
-            countries.Where(c => c.Currency != "NaN").Select(c => c.Currency).Distinct().ToList()
+                Environment.NewLine,
+                countries
+                    .SelectMany(c => c.Currencies)
+                    .Where(d => d.GetValueOrDefault("code") is not null && d.GetValueOrDefault("name") is not null)
+                    .Select(d => $"  - {d["name"]} ({d["code"]})")
+                    .Distinct()
+                    .ToList()
             )
         );
     }

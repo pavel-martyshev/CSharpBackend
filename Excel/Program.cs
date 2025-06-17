@@ -1,6 +1,4 @@
-﻿using OfficeOpenXml;
-using OfficeOpenXml.Style;
-using System.Drawing;
+﻿using ClosedXML.Excel;
 
 namespace Excel;
 
@@ -16,28 +14,24 @@ internal class Program
             new Person("Vladislav", "Ignatiev", 25, "+12223334455")
         ];
 
-        ExcelPackage.License.SetNonCommercialOrganization("Non commercial organization");
+        using var wb = new XLWorkbook();
+        var ws = wb.Worksheets.Add("Persons");
 
-        using var package = new ExcelPackage();
-        var ws = package.Workbook.Worksheets.Add("Persons");
+        ws.Cell("A1").InsertTable(persons, tableName: "Persons");
 
-        ws.Cells.LoadFromCollection(persons, PrintHeaders: true);
-        ws.Cells.AutoFitColumns();
-
-        var header = ws.Cells["A1:D1"];
+        var header = ws.Range("A1:D1");
         header.Style.Font.Bold = true;
-        header.Style.Fill.PatternType = ExcelFillStyle.Solid;
-        header.Style.Fill.BackgroundColor.SetColor(Color.LightSteelBlue);
+        header.Style.Fill.PatternType = XLFillPatternValues.Solid;
+        header.Style.Fill.SetBackgroundColor(XLColor.BlueGray);
 
-        foreach (var columnAddress in ws.Cells)
+        foreach (var columnAddress in ws.Cells())
         {
-            columnAddress.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-            columnAddress.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-            columnAddress.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-            columnAddress.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+            columnAddress.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            columnAddress.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
         }
 
-        package.SaveAs(new FileInfo("Persons.xlsx"));
+        ws.Columns().AdjustToContents();
+
+        wb.SaveAs("Persons.xlsx");
     }
 }
-

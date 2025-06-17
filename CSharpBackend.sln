@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdoNet", "AdoNet\AdoNet.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransactionTask", "TransactionTask\TransactionTask.csproj", "{8C6DFFB1-7CBC-49A6-A25A-3774C7D5B846}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopEF", "ShopEF\ShopEF.csproj", "{D366B982-56E8-40D1-A165-2C3B0053970D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{8C6DFFB1-7CBC-49A6-A25A-3774C7D5B846}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C6DFFB1-7CBC-49A6-A25A-3774C7D5B846}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C6DFFB1-7CBC-49A6-A25A-3774C7D5B846}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D366B982-56E8-40D1-A165-2C3B0053970D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D366B982-56E8-40D1-A165-2C3B0053970D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D366B982-56E8-40D1-A165-2C3B0053970D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D366B982-56E8-40D1-A165-2C3B0053970D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

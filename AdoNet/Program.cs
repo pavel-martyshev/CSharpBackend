@@ -1,145 +1,103 @@
-﻿using System.Data;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace AdoNet;
 
 internal class Program
 {
-    private const string ConnectionString = "Data Source=.;Initial Catalog=shop;User ID=myUser;Integrated Security=true;Encrypt=False";
+    private const string ConnectionString = "Data Source=.;Initial Catalog=Shop;Integrated Security=true;Encrypt=False";
 
-    private static int GetTotalGoodsCount(SqlConnection connection)
+    private static int GetTotalProductsCount(SqlConnection connection)
     {
-        const string sql = "SELECT COUNT(*) FROM goods";
-
-        try
-        {
-            using var command = new SqlCommand(sql, connection);
-            return (int)command.ExecuteScalar();
-        }
-        catch (SqlException ex)
-        {
-            Console.WriteLine($"Произошла ошибка при получении общего количества товаров{Environment.NewLine}{ex}");
-            return 0;
-        }
+        const string sql = "SELECT COUNT(*) FROM Products";
+        using var command = new SqlCommand(sql, connection);
+        return (int)command.ExecuteScalar();
     }
 
     private static void InsertNewCategory(string categoryName, SqlConnection connection)
     {
-        const string sql = "INSERT INTO categories (category) VALUES (@categoryName)";
+        const string sql = """
+                           INSERT INTO Categories (Name)
+                           VALUES (@categoryName)
+                           """;
+        using var command = new SqlCommand(sql, connection);
 
-        try
-        {
-            using var command = new SqlCommand(sql, connection);
-            command.Parameters.AddWithValue("categoryName", categoryName);
-            command.ExecuteNonQuery();
-        }
-        catch (SqlException ex)
-        {
-            Console.WriteLine($"Произошла ошибка при записи данных в БД{Environment.NewLine}{ex}");
-        }
+        command.Parameters.AddWithValue("categoryName", categoryName);
+        command.ExecuteNonQuery();
     }
 
     private static int GetCategoryIdByName(string categoryName, SqlConnection connection)
     {
-        const string sql = "SELECT id FROM categories WHERE category = @categoryName";
+        const string sql = """
+                           SELECT Id 
+                           FROM Categories 
+                           WHERE Name = @categoryName
+                           """;
+        using var command = new SqlCommand(sql, connection);
 
-        try
-        {
-            using var command = new SqlCommand(sql, connection);
-            command.Parameters.AddWithValue("categoryName", categoryName);
-            return (int)command.ExecuteScalar();
-        }
-        catch (SqlException ex)
-        {
-            Console.WriteLine($"Произошла ошибка при получении идентификатора категории \"{categoryName}\"{Environment.NewLine}{ex}");
-            return 0;
-        }
+        command.Parameters.AddWithValue("categoryName", categoryName);
+        return (int)command.ExecuteScalar();
     }
 
-    private static void InsertNewGood(string goodName, int categoryId, double price, SqlConnection connection)
+    private static void InsertNewProduct(string productName, int categoryId, double price, SqlConnection connection)
     {
-        const string sql = "INSERT INTO goods (name, category_id, price) VALUES (@goodName, @categoryId, @price)";
+        const string sql = """
+                           INSERT INTO Products (Name, Price, CategoryId)
+                           VALUES (@productName, @price, @categoryId)
+                           """;
+        using var command = new SqlCommand(sql, connection);
 
-        try
-        {
-            using var command = new SqlCommand(sql, connection);
-            command.Parameters.AddWithValue("goodName", goodName);
-            command.Parameters.AddWithValue("categoryId", categoryId);
-            command.Parameters.AddWithValue("price", price);
-            command.ExecuteNonQuery();
-        }
-        catch (SqlException ex)
-        {
-            Console.WriteLine($"Произошла ошибка при записи данных в БД{Environment.NewLine}{ex}");
-        }
+        command.Parameters.AddWithValue("productName", productName);
+        command.Parameters.AddWithValue("categoryId", categoryId);
+        command.Parameters.AddWithValue("price", price);
+
+        command.ExecuteNonQuery();
     }
 
-    private static void DeleteGoodById(int goodId, SqlConnection connection)
+    private static void DeleteProductById(int productId, SqlConnection connection)
     {
-        const string sql = "DELETE FROM goods WHERE id = @goodId";
+        const string sql = """
+                           DELETE FROM Products
+                           WHERE Id = @productId
+                           """;
+        var command = new SqlCommand(sql, connection);
 
-        try
-        {
-            var command = new SqlCommand(sql, connection);
-            command.Parameters.AddWithValue("goodId", goodId);
-            command.ExecuteNonQuery();
-        }
-        catch (SqlException ex)
-        {
-            Console.WriteLine($"Произошла ошибка при удалении товара с id = {goodId}{Environment.NewLine}{ex}");
-        }
+        command.Parameters.AddWithValue("productId", productId);
+        command.ExecuteNonQuery();
     }
 
-    private static void PrintAllGoodsFromReader(SqlConnection connection)
+    private static SqlDataReader GetAllProductsReader(SqlConnection connection)
     {
-        const string sql = "SELECT g.id, g.name, c.category, g.price " +
-                           "FROM goods g " +
-                           "JOIN categories c ON g.category_id = c.id";
+        const string sql = """
+                           SELECT DISTINCT p.Id, p.Name, c.Name, p.Price
+                           FROM Products p
+                           INNER JOIN Categories c
+                               ON p.CategoryId = c.Id
+                           """;
+        using var command = new SqlCommand(sql, connection);
+        var reader = command.ExecuteReader();
 
-        try
-        {
-            using var command = new SqlCommand(sql, connection);
-            using var reader = command.ExecuteReader();
-
-            while (reader.Read())
-            {
-                Console.WriteLine(
-                    $"Товар #{reader[0]}:{Environment.NewLine}" +
-                    $"  - name: {reader[1]}{Environment.NewLine}" +
-                    $"  - category: {reader[2]}{Environment.NewLine}" +
-                    $"  - price: {reader[3]}{Environment.NewLine}"
-                );
-            }
-        }
-        catch (SqlException ex)
-        {
-            Console.WriteLine(ex);
-        }
+        return reader;
     }
 
-    private static void PrintAllGoodsFromDataSet()
+    private static DataTable GetAllProductsDataSet()
     {
-        const string sql = "SELECT g.id, g.name, c.category, g.price " +
-                           "FROM goods g " +
-                           "JOIN categories c ON g.category_id = c.id";
+        const string sql = """
+                           SELECT DISTINCT p.Id, p.Name, c.Name, p.Price
+                           FROM Products p
+                           INNER JOIN Categories c
+                               ON p.CategoryId = c.Id
+                           """;
 
         using var adapter = new SqlDataAdapter(sql, ConnectionString);
         var dataSet = new DataSet();
 
-        adapter.Fill(dataSet, "Goods");
-        var table = dataSet.Tables["Goods"];
+        adapter.Fill(dataSet, "Products");
+        var table = dataSet.Tables["Products"];
 
         ArgumentNullException.ThrowIfNull(table);
 
-        foreach (DataRow row in table.Rows)
-        {
-            Console.WriteLine(
-                $"Товар #{row[0]}:{Environment.NewLine}" +
-                $"  - name: {row[1]}{Environment.NewLine}" +
-                $"  - category: {row[2]}{Environment.NewLine}" +
-                $"  - price: {row[3]}{Environment.NewLine}"
-            );
-        }
+        return table;
     }
 
     public static void Main(string[] args)
@@ -147,16 +105,85 @@ internal class Program
         using var connection = new SqlConnection(ConnectionString);
         connection.Open();
 
-        Console.WriteLine($"Общее количество товаров: {GetTotalGoodsCount(connection)}");
+        try
+        {
+            Console.WriteLine($"Общее количество товаров: {GetTotalProductsCount(connection)}");
+        }
+        catch (SqlException ex)
+        {
+            Console.WriteLine($"Произошла ошибка при получении общего количества товаров{Environment.NewLine}{ex}");
+        }
 
-        InsertNewCategory("smartphones", connection);
+        try
+        {
+            InsertNewCategory("Smartphones", connection);
+        }
+        catch (SqlException ex)
+        {
+            Console.WriteLine($"Произошла ошибка при записи данных в БД{Environment.NewLine}{ex}");
+        }
 
-        var categoryId = GetCategoryIdByName("smartphones", connection);
-        InsertNewGood("HUAWEI Mate XT 1024 ГБ", categoryId, 150000, connection);
+        try
+        {
+            var categoryId = GetCategoryIdByName("smartphones", connection);
+            InsertNewProduct("HUAWEI Mate XT 1024 ГБ", categoryId, 150000, connection);
+        }
+        catch (SqlException ex)
+        {
+            Console.WriteLine($"Произошла ошибка при добавлении новогог товара{Environment.NewLine}{ex}");
+        }
 
-        DeleteGoodById(2, connection);
+        try
+        {
+            DeleteProductById(2, connection);
+        }
+        catch (SqlException ex)
+        {
+            Console.WriteLine($"Произошла ошибка при удалении товара{Environment.NewLine}{ex}");
+        }
 
-        PrintAllGoodsFromReader(connection);
-        PrintAllGoodsFromDataSet();
+        Console.WriteLine();
+        Console.WriteLine("Список всех товаров через reader:");
+
+        try
+        {
+            var reader = GetAllProductsReader(connection);
+
+            while (reader.Read())
+            {
+                Console.WriteLine($"""
+                                   Товар #{reader[0]}:
+                                     - name: {reader[1]}
+                                     - category: {reader[2]}
+                                     - price: {reader[3]}{Environment.NewLine}
+                                   """);
+            }
+        }
+        catch (SqlException ex)
+        {
+            Console.WriteLine($"Произошла ошибка при получении списка товаров{Environment.NewLine}{ex}");
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("Список всех товаров через DataSet:");
+
+        try
+        {
+            var table = GetAllProductsDataSet();
+
+            foreach (DataRow row in table.Rows)
+            {
+                Console.WriteLine($"""
+                                   Товар #{row[0]}:
+                                     - name: {row[1]}
+                                     - category: {row[2]}
+                                     - price: {row[3]}{Environment.NewLine}
+                                   """);
+            }
+        }
+        catch (SqlException ex)
+        {
+            Console.WriteLine($"Произошла ошибка при получении списка товаров{Environment.NewLine}{ex}");
+        }
     }
 }

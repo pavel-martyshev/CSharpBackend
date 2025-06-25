@@ -4,6 +4,8 @@ public class Order : BaseModel
 {
     public DateTimeOffset Date { get; set; }
 
+    public int ProductsCount { get; set; }
+
     public int CustomerId { get; set; }
 
     public virtual Customer Customer { get; set; } = null!;

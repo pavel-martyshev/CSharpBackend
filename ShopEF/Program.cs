@@ -140,48 +140,56 @@ internal class Program
             new()
             {
                 Date = new DateTimeOffset(2024, 11, 3, 8, 15, 12, TimeSpan.FromHours(+1)),
+                ProductsCount = 2,
                 Customer = customers[2],
                 Products = [products[0], products[5]]
             },
             new()
             {
                 Date = new DateTimeOffset(2023, 6, 20, 19, 47, 33, TimeSpan.FromHours(-4)),
+                ProductsCount = 3,
                 Customer = customers[0],
                 Products = [products[0], products[3], products[9]]
             },
             new()
             {
                 Date = new DateTimeOffset(2025, 1, 15, 13, 5, 56, TimeSpan.FromHours(+9)),
+                ProductsCount = 1,
                 Customer = customers[4],
                 Products = [products[2]]
             },
             new()
             {
                 Date = new DateTimeOffset(2022, 8, 29, 22, 10, 5, TimeSpan.FromHours(+3)),
+                ProductsCount = 3,
                 Customer = customers[1],
                 Products = [products[6], products[7], products[8]]
             },
             new()
             {
                 Date = new DateTimeOffset(2024, 12, 31, 23, 59, 59, TimeSpan.FromHours(-2)),
+                ProductsCount = 1,
                 Customer = customers[3],
                 Products = [products[4]]
             },
             new()
             {
                 Date = new DateTimeOffset(2025, 6, 1, 11, 11, 11, TimeSpan.FromHours(+5)),
+                ProductsCount = 2,
                 Customer = customers[2],
                 Products = [products[1], products[2]]
             },
             new()
             {
                 Date = new DateTimeOffset(2023, 2, 14, 7, 30, 0, TimeSpan.Zero),
+                ProductsCount = 3,
                 Customer = customers[1],
                 Products = [products[0], products[3], products[5]]
             },
             new()
             {
                 Date = new DateTimeOffset(2024, 7, 7, 17, 45, 30, TimeSpan.FromHours(-7)),
+                ProductsCount = 2,
                 Customer = customers[4],
                 Products = [products[9], products[8]]
             }

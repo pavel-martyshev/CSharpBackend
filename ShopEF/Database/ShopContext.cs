@@ -5,13 +5,13 @@ namespace ShopEF.Database;
 
 public class ShopContext : DbContext
 {
-    public DbSet<Category> Categories { get; set; }
+    public virtual DbSet<Category> Categories { get; set; }
 
-    public DbSet<Product> Products { get; set; }
+    public virtual DbSet<Product> Products { get; set; }
 
-    public DbSet<Customer> Customers { get; set; }
+    public virtual DbSet<Customer> Customers { get; set; }
 
-    public DbSet<Order> Orders { get; set; }
+    public virtual DbSet<Order> Orders { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
@@ -24,13 +24,11 @@ public class ShopContext : DbContext
     {
         modelBuilder.Entity<Category>()
             .Property(c => c.Name)
-            .IsRequired()
             .HasMaxLength(100);
 
         modelBuilder.Entity<Product>(b =>
         {
             b.Property(p => p.Name)
-                .IsRequired()
                 .HasMaxLength(150);
 
             b.Property(p => p.Price)
@@ -44,22 +42,18 @@ public class ShopContext : DbContext
         modelBuilder.Entity<Customer>(b =>
         {
             b.Property(c => c.FirstName)
-                .IsRequired()
                 .HasMaxLength(50);
 
             b.Property(c => c.MiddleName)
                 .HasMaxLength(50);
 
             b.Property(c => c.LastName)
-                .IsRequired()
                 .HasMaxLength(50);
 
             b.Property(p => p.PhoneNumber)
-                .IsRequired()
                 .HasMaxLength(20);
 
             b.Property(p => p.Email)
-                .IsRequired()
                 .HasMaxLength(100);
         });
 

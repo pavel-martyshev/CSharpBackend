@@ -69,21 +69,20 @@ internal class Program
     private static SqlDataReader GetAllProductsReader(SqlConnection connection)
     {
         const string sql = """
-                           SELECT DISTINCT p.Id, p.Name, c.Name, p.Price
+                           SELECT p.Id, p.Name, c.Name, p.Price
                            FROM Products p
                            INNER JOIN Categories c
                                ON p.CategoryId = c.Id
                            """;
         using var command = new SqlCommand(sql, connection);
-        var reader = command.ExecuteReader();
 
-        return reader;
+        return command.ExecuteReader(); ;
     }
 
     private static DataTable GetAllProductsDataSet()
     {
         const string sql = """
-                           SELECT DISTINCT p.Id, p.Name, c.Name, p.Price
+                           SELECT p.Id, p.Name, c.Name, p.Price
                            FROM Products p
                            INNER JOIN Categories c
                                ON p.CategoryId = c.Id
@@ -147,7 +146,7 @@ internal class Program
 
         try
         {
-            var reader = GetAllProductsReader(connection);
+            using var reader = GetAllProductsReader(connection);
 
             while (reader.Read())
             {

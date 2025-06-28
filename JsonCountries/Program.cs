@@ -8,25 +8,34 @@ internal class Program
 
     public static void Main(string[] args)
     {
-        var countries = JsonConvert.DeserializeObject<List<Country>>(File.ReadAllText(CountriesJsonPath));
+        try
+        {
+            var countries = JsonConvert.DeserializeObject<List<Country>>(File.ReadAllText(CountriesJsonPath));
 
-        ArgumentNullException.ThrowIfNull(countries);
+            ArgumentNullException.ThrowIfNull(countries);
 
-        Console.WriteLine($"Суммарная численность по всем странам - {countries.Sum(c => c.Population)}");
+            var populationSum = countries.Sum(c => c.Population);
 
-        Console.WriteLine();
+            Console.WriteLine($"Суммарная численность по всем странам = {populationSum}");
 
+            Console.WriteLine();
 
-        Console.WriteLine("Перечень всех валют:");
-        Console.WriteLine(string.Join(
-                Environment.NewLine,
-                countries
-                    .SelectMany(c => c.Currencies)
-                    .Where(d => d.GetValueOrDefault("code") is not null && d.GetValueOrDefault("name") is not null)
-                    .Select(d => $"  - {d["name"]} ({d["code"]})")
-                    .Distinct()
-                    .ToList()
-            )
-        );
+            var allCurrencies = countries.SelectMany(c => c.Currencies).ToList();
+
+            Console.WriteLine("Перечень всех валют:");
+            Console.WriteLine(string.Join(Environment.NewLine, allCurrencies));
+        }
+        catch (FileNotFoundException)
+        {
+            Console.WriteLine("Файл не найден.");
+        }
+        catch (JsonException ex)
+        {
+            Console.WriteLine($"Ошибка при чтении JSON: {ex.Message}");
+        }
+        catch (IOException ex)
+        {
+            Console.WriteLine($"Ошибка ввода-вывода: {ex.Message}");
+        }
     }
 }

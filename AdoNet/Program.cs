@@ -60,7 +60,7 @@ internal class Program
                            DELETE FROM Products
                            WHERE Id = @productId
                            """;
-        var command = new SqlCommand(sql, connection);
+        using var command = new SqlCommand(sql, connection);
 
         command.Parameters.AddWithValue("productId", productId);
         command.ExecuteNonQuery();
@@ -76,7 +76,7 @@ internal class Program
                            """;
         using var command = new SqlCommand(sql, connection);
 
-        return command.ExecuteReader(); ;
+        return command.ExecuteReader();
     }
 
     private static DataTable GetAllProductsDataSet()

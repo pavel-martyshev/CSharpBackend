@@ -1,34 +1,29 @@
-BEGIN
-    CREATE DATABASE [Shop];
-END
+CREATE DATABASE [Shop];
 GO
 
 USE [Shop];
 GO
 
-BEGIN
-    CREATE TABLE [dbo].[Categories]
-    (
-        [Id] INT NOT NULL IDENTITY(1, 1),
-        [Name] NVARCHAR(100) NOT NULL UNIQUE,
-        CONSTRAINT PK_Categories PRIMARY KEY CLUSTERED (Id)
-    );
-END
+
+CREATE TABLE [dbo].[Categories]
+(
+    [Id] INT NOT NULL IDENTITY(1, 1),
+    [Name] NVARCHAR(100) NOT NULL UNIQUE,
+    CONSTRAINT PK_Categories PRIMARY KEY CLUSTERED (Id)
+);
 GO
 
-BEGIN
-    CREATE TABLE [dbo].[Products]
-    (
-        [Id] INT NOT NULL IDENTITY(1, 1),
-        [Name] NVARCHAR(100) NOT NULL,
-        [Price] DECIMAL(9, 2) NOT NULL,
-        [CategoryId] INT NOT NULL,
-        CONSTRAINT PK_Products PRIMARY KEY CLUSTERED (Id),
-        CONSTRAINT FK_Products_Categories
-            FOREIGN KEY (CategoryId)
-            REFERENCES dbo.Categories(Id)
+CREATE TABLE [dbo].[Products]
+(
+    [Id] INT NOT NULL IDENTITY(1, 1),
+    [Name] NVARCHAR(100) NOT NULL,
+    [Price] DECIMAL(9, 2) NOT NULL,
+    [CategoryId] INT NOT NULL,
+    CONSTRAINT PK_Products PRIMARY KEY CLUSTERED (Id),
+    CONSTRAINT FK_Products_Categories
+        FOREIGN KEY (CategoryId)
+        REFERENCES dbo.Categories(Id)
 );
-END
 GO
 
 INSERT INTO [dbo].[Categories] ([Name])
@@ -44,3 +39,4 @@ VALUES
     (N'ASUS ProArt PA32UCX-PK', 100000, 3),
     (N'Fragmachine FIRE 9101', 150000, 2),
     (N'MSI CreatorPro X18 A14VMG-604RU', 200000, 1);
+GO

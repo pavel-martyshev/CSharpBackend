@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ShopEF.Database;
+﻿using ShopEF.Database;
 using ShopEF.Database.Model;
 
 namespace ShopEF;
@@ -82,7 +81,10 @@ internal class Program
             }
         };
 
-        foreach (var product in products) db.Products.Add(product);
+        foreach (var product in products)
+        {
+            db.Products.Add(product);
+        }
 
         db.SaveChanges();
     }
@@ -140,58 +142,75 @@ internal class Program
             new()
             {
                 Date = new DateTimeOffset(2024, 11, 3, 8, 15, 12, TimeSpan.FromHours(+1)),
-                ProductsCount = 2,
                 Customer = customers[2],
-                Products = [products[0], products[5]]
+                OrderProduct = [
+                    new OrderProduct { Product = products[0], ProductCount = 3},
+                    new OrderProduct { Product = products[5], ProductCount = 1}
+                ]
             },
             new()
             {
                 Date = new DateTimeOffset(2023, 6, 20, 19, 47, 33, TimeSpan.FromHours(-4)),
-                ProductsCount = 3,
                 Customer = customers[0],
-                Products = [products[0], products[3], products[9]]
+                OrderProduct = [
+                    new OrderProduct { Product = products[0], ProductCount = 1},
+                    new OrderProduct { Product = products[3], ProductCount = 4},
+                    new OrderProduct { Product = products[9], ProductCount = 1}
+                ]
             },
             new()
             {
                 Date = new DateTimeOffset(2025, 1, 15, 13, 5, 56, TimeSpan.FromHours(+9)),
-                ProductsCount = 1,
                 Customer = customers[4],
-                Products = [products[2]]
+                OrderProduct = [
+                    new OrderProduct { Product = products[2], ProductCount = 1}
+                ]
             },
             new()
             {
                 Date = new DateTimeOffset(2022, 8, 29, 22, 10, 5, TimeSpan.FromHours(+3)),
-                ProductsCount = 3,
                 Customer = customers[1],
-                Products = [products[6], products[7], products[8]]
+                OrderProduct = [
+                    new OrderProduct { Product = products[6], ProductCount = 2},
+                    new OrderProduct { Product = products[7], ProductCount = 1},
+                    new OrderProduct { Product = products[8], ProductCount = 2}
+                ]
             },
             new()
             {
                 Date = new DateTimeOffset(2024, 12, 31, 23, 59, 59, TimeSpan.FromHours(-2)),
-                ProductsCount = 1,
                 Customer = customers[3],
-                Products = [products[4]]
+                OrderProduct = [
+                    new OrderProduct { Product = products[4], ProductCount = 7}
+                ]
             },
             new()
             {
                 Date = new DateTimeOffset(2025, 6, 1, 11, 11, 11, TimeSpan.FromHours(+5)),
-                ProductsCount = 2,
                 Customer = customers[2],
-                Products = [products[1], products[2]]
+                OrderProduct = [
+                    new OrderProduct { Product = products[1], ProductCount = 1},
+                    new OrderProduct { Product = products[2], ProductCount = 7}
+                ]
             },
             new()
             {
                 Date = new DateTimeOffset(2023, 2, 14, 7, 30, 0, TimeSpan.Zero),
-                ProductsCount = 3,
                 Customer = customers[1],
-                Products = [products[0], products[3], products[5]]
+                OrderProduct = [
+                    new OrderProduct { Product = products[0], ProductCount = 12},
+                    new OrderProduct { Product = products[3], ProductCount = 1},
+                    new OrderProduct { Product = products[5], ProductCount = 54}
+                ]
             },
             new()
             {
                 Date = new DateTimeOffset(2024, 7, 7, 17, 45, 30, TimeSpan.FromHours(-7)),
-                ProductsCount = 2,
                 Customer = customers[4],
-                Products = [products[9], products[8]]
+                OrderProduct = [
+                    new OrderProduct { Product = products[9], ProductCount = 22},
+                    new OrderProduct { Product = products[8], ProductCount = 11}
+                ]
             }
         };
 
@@ -228,9 +247,14 @@ internal class Program
             Console.WriteLine($"Произошла ошибка при создании покупателей и заказов{Environment.NewLine}{ex}");
         }
 
-        var topProduct = db.Products
-            .OrderByDescending(p => p.Orders.Count)
-            .Include(p => p.Orders)
+        var topProduct = db.OrderProduct
+            .GroupBy(op => op.Product.Name)
+            .Select(g => new
+            {
+                Name = g.Key,
+                ProductCount = g.Sum(op => op.ProductCount)
+            })
+            .OrderByDescending(x => x.ProductCount)
             .FirstOrDefault();
 
         if (topProduct is null)
@@ -240,7 +264,7 @@ internal class Program
         else
         {
             Console.WriteLine(
-                $"Самый популярный товар - {topProduct.Name}. Количество заказова - {topProduct.Orders.Count}");
+                $"Самый популярный товар - {topProduct.Name}. Количество заказов - {topProduct.ProductCount}");
         }
 
         var customersSpending = db.Customers
@@ -271,9 +295,10 @@ internal class Program
             {
                 c.Name,
                 SoldProductsCount = c.Products
-                    .SelectMany(p => p.Orders)
-                    .Count()
+                    .SelectMany(p => p.OrderProduct)
+                    .Sum(x => x.ProductCount)
             })
+            .OrderByDescending(x => x.SoldProductsCount)
             .ToList();
 
         foreach (var category in categories)

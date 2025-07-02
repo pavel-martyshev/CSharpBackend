@@ -13,6 +13,10 @@ public class ShopContext : DbContext
 
     public virtual DbSet<Order> Orders { get; set; }
 
+    public virtual DbSet<CategoryProduct> CategoryProduct { get; set; }
+
+    public virtual DbSet<OrderProduct> OrderProduct { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
         options
@@ -22,9 +26,15 @@ public class ShopContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Category>()
-            .Property(c => c.Name)
-            .HasMaxLength(100);
+        modelBuilder.Entity<Category>(e =>
+        {
+            e.HasMany(c => c.Products)
+                .WithMany(p => p.Categories)
+                .UsingEntity<CategoryProduct>();
+
+            e.Property(c => c.Name)
+                    .HasMaxLength(100);
+        });
 
         modelBuilder.Entity<Product>(b =>
         {
@@ -35,9 +45,15 @@ public class ShopContext : DbContext
                 .HasColumnType("decimal(9, 2)");
         });
 
-        modelBuilder.Entity<Order>()
-            .Property(o => o.Date)
-            .HasColumnType("datetimeoffset(0)");
+        modelBuilder.Entity<Order>(e =>
+        {
+            e.HasMany(o => o.Products)
+                .WithMany(p => p.Orders)
+                .UsingEntity<OrderProduct>();
+
+            e.Property(o => o.Date)
+                .HasColumnType("datetimeoffset(0)");
+        });
 
         modelBuilder.Entity<Customer>(b =>
         {

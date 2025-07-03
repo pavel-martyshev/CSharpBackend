@@ -1,4 +1,5 @@
-﻿using ShopEF.Database;
+﻿using Microsoft.EntityFrameworkCore;
+using ShopEF.Database;
 using ShopEF.Database.Model;
 
 namespace ShopEF;
@@ -99,7 +100,8 @@ internal class Program
                 MiddleName = "Иванович",
                 LastName = "Петров",
                 PhoneNumber = "+7-912-345-67-89",
-                Email = "ivan.petrov@example.com"
+                Email = "ivan.petrov@example.com",
+                BirthDate = new DateOnly(1978, 11, 23)
             },
             new()
             {
@@ -107,7 +109,8 @@ internal class Program
                 MiddleName = "Сергеевна",
                 LastName = "Иванова",
                 PhoneNumber = "+7-903-876-54-32",
-                Email = "maria.ivanova@example.com"
+                Email = "maria.ivanova@example.com",
+                BirthDate = new DateOnly(2005, 06, 26)
             },
             new()
             {
@@ -115,7 +118,8 @@ internal class Program
                 MiddleName = "Владимирович",
                 LastName = "Соколов",
                 PhoneNumber = "+7-925-123-45-67",
-                Email = "a.sokolov@example.com"
+                Email = "a.sokolov@example.com",
+                BirthDate = new DateOnly(1962, 01, 01)
             },
             new()
             {
@@ -123,7 +127,8 @@ internal class Program
                 MiddleName = "Дмитриевна",
                 LastName = "Смирнова",
                 PhoneNumber = "+7-901-234-56-78",
-                Email = "ekaterina.smirnova@example.com"
+                Email = "ekaterina.smirnova@example.com",
+                BirthDate = new DateOnly(1994, 05, 15)
             },
             new()
             {
@@ -131,7 +136,8 @@ internal class Program
                 MiddleName = "Алексеевич",
                 LastName = "Кузнецов",
                 PhoneNumber = "+7-981-987-65-43",
-                Email = "d.kuznetsov@example.com"
+                Email = "d.kuznetsov@example.com",
+                BirthDate = new DateOnly(1999, 09, 09)
             }
         };
 
@@ -227,7 +233,7 @@ internal class Program
         using var db = new ShopContext();
 
         db.Database.EnsureDeleted();
-        db.Database.EnsureCreated();
+        db.Database.Migrate();
 
         try
         {

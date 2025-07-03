@@ -12,5 +12,7 @@ public class Customer : BaseModel
 
     public string Email { get; set; } = null!;
 
+    public DateOnly BirthDate { get; set; }
+
     public virtual List<Order> Orders { get; set; } = [];
 }

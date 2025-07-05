@@ -20,7 +20,10 @@ internal class Program
 
             Console.WriteLine();
 
-            var allCurrencies = countries.SelectMany(c => c.Currencies).ToList();
+            var allCurrencies = countries
+                .SelectMany(c => c.Currencies)
+                .DistinctBy(c => c.Name)
+                .ToList();
 
             Console.WriteLine("Перечень всех валют:");
             Console.WriteLine(string.Join(Environment.NewLine, allCurrencies));
@@ -29,13 +32,13 @@ internal class Program
         {
             Console.WriteLine("Файл не найден.");
         }
-        catch (JsonException ex)
+        catch (JsonException e)
         {
-            Console.WriteLine($"Ошибка при чтении JSON: {ex.Message}");
+            Console.WriteLine($"Ошибка при чтении JSON: {e.Message}");
         }
-        catch (IOException ex)
+        catch (IOException e)
         {
-            Console.WriteLine($"Ошибка ввода-вывода: {ex.Message}");
+            Console.WriteLine($"Ошибка ввода-вывода: {e.Message}");
         }
     }
 }

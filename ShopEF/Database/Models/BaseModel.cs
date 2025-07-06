@@ -1,4 +1,4 @@
-﻿namespace ShopEF.Database.Model;
+﻿namespace ShopEF.Database.Models;
 
 public class BaseModel
 {

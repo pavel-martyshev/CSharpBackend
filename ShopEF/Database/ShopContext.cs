@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ShopEF.Database.Model;
+using ShopEF.Database.Models;
 
 namespace ShopEF.Database;
 

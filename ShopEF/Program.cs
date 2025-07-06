@@ -1,12 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ShopEF.Database;
-using ShopEF.Database.Model;
+﻿using ShopEF.Database;
+using ShopEF.Database.Models;
+using ShopEF.Database.Repositories;
+using ShopEF.Database.Repositories.Interfaces;
 
 namespace ShopEF;
 
 internal class Program
 {
-    private static void CreateCategoriesAndProducts(ShopContext db)
+    private static void CreateCategoriesAndProducts(IUnitOfWork uow)
     {
         var categories = new List<Category>
         {
@@ -82,15 +83,17 @@ internal class Program
             }
         };
 
+        uow.BeginTransaction();
+
         foreach (var product in products)
         {
-            db.Products.Add(product);
+            uow.ProductRepository.Create(product);
         }
 
-        db.SaveChanges();
+        uow.Save();
     }
 
-    private static void CreateCustomersAndOrders(ShopContext db)
+    private static void CreateCustomersAndOrders(IUnitOfWork uow)
     {
         var customers = new List<Customer>
         {
@@ -141,7 +144,7 @@ internal class Program
             }
         };
 
-        var products = db.Products.ToArray();
+        var products = uow.ProductRepository.GetAll();
 
         var orders = new List<Order>
         {
@@ -220,48 +223,40 @@ internal class Program
             }
         };
 
+        uow.BeginTransaction();
+
         foreach (var order in orders)
         {
-            db.Orders.Add(order);
+            uow.OrderRepository.Create(order);
         }
 
-        db.SaveChanges();
+        uow.Save();
     }
 
     public static void Main(string[] args)
     {
-        using var db = new ShopContext();
-
-        db.Database.EnsureDeleted();
-        db.Database.Migrate();
+        using var uow = new UnitOfWork(new ShopContext());
+        uow.InitDb();
 
         try
         {
-            CreateCategoriesAndProducts(db);
+            CreateCategoriesAndProducts(uow);
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            Console.WriteLine($"Произошла ошибка при создании категорий и товаров{Environment.NewLine}{ex}");
+            Console.WriteLine($"Произошла ошибка при создании категорий и товаров{Environment.NewLine}{e}");
         }
 
         try
         {
-            CreateCustomersAndOrders(db);
+            CreateCustomersAndOrders(uow);
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            Console.WriteLine($"Произошла ошибка при создании покупателей и заказов{Environment.NewLine}{ex}");
+            Console.WriteLine($"Произошла ошибка при создании покупателей и заказов{Environment.NewLine}{e}");
         }
 
-        var topProduct = db.OrderProduct
-            .GroupBy(op => op.Product.Name)
-            .Select(g => new
-            {
-                Name = g.Key,
-                ProductCount = g.Sum(op => op.ProductCount)
-            })
-            .OrderByDescending(x => x.ProductCount)
-            .FirstOrDefault();
+        var topProduct = uow.ProductRepository.GetTopProduct();
 
         if (topProduct is null)
         {
@@ -270,20 +265,10 @@ internal class Program
         else
         {
             Console.WriteLine(
-                $"Самый популярный товар - {topProduct.Name}. Количество заказов - {topProduct.ProductCount}");
+                $"Самый популярный товар - {topProduct.Name}. Количество заказов - {topProduct.OrdersQuantity}");
         }
 
-        var customersSpending = db.Customers
-            .Select(c => new
-            {
-                c.FirstName,
-                c.MiddleName,
-                c.LastName,
-                SpendingSum = c.Orders
-                    .SelectMany(o => o.Products)
-                    .Sum(p => p.Price)
-            })
-            .ToList();
+        var customersSpending = uow.CustomerRepository.GetCustomersSpending();
 
         Console.WriteLine();
         Console.WriteLine("Траты каждого клиента за все время:");
@@ -296,16 +281,7 @@ internal class Program
 
         Console.WriteLine();
 
-        var categories = db.Categories
-            .Select(c => new
-            {
-                c.Name,
-                SoldProductsCount = c.Products
-                    .SelectMany(p => p.OrderProduct)
-                    .Sum(x => x.ProductCount)
-            })
-            .OrderByDescending(x => x.SoldProductsCount)
-            .ToList();
+        var categories = uow.CategoryRepository.GetCategoryWithSoldProducts();
 
         foreach (var category in categories)
         {

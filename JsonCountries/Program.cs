@@ -22,7 +22,7 @@ internal class Program
 
             var allCurrencies = countries
                 .SelectMany(c => c.Currencies)
-                .DistinctBy(c => c.Name)
+                .DistinctBy(c => c.Symbol)
                 .ToList();
 
             Console.WriteLine("Перечень всех валют:");

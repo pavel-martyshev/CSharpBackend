@@ -5,6 +5,8 @@ namespace ShopEF.Database.Repositories;
 
 internal class UnitOfWork(DbContext db) : IUnitOfWork
 {
+    private readonly DbContext _db = db;
+
     public CategoryRepository CategoryRepository => new(db);
 
     public ProductRepository ProductRepository => new(db);
@@ -12,8 +14,6 @@ internal class UnitOfWork(DbContext db) : IUnitOfWork
     public CustomerRepository CustomerRepository => new(db);
 
     public OrderRepository OrderRepository => new(db);
-
-    private readonly DbContext _db = db;
 
     public void Dispose()
     {
@@ -33,12 +33,6 @@ internal class UnitOfWork(DbContext db) : IUnitOfWork
         }
 
         _db.SaveChanges();
-    }
-
-    public void InitDb()
-    {
-        _db.Database.EnsureDeleted();
-        _db.Database.Migrate();
     }
 
     public void BeginTransaction()

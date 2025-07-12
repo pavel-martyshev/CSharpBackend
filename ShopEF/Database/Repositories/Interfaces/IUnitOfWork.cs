@@ -12,8 +12,6 @@ internal interface IUnitOfWork : IDisposable
 
     public void Save();
 
-    public void InitDb();
-
     public void BeginTransaction();
 
     public void RollbackTransaction();

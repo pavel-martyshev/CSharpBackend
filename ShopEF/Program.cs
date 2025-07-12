@@ -1,4 +1,5 @@
-﻿using ShopEF.Database;
+﻿using Microsoft.EntityFrameworkCore;
+using ShopEF.Database;
 using ShopEF.Database.Models;
 using ShopEF.Database.Repositories;
 using ShopEF.Database.Repositories.Interfaces;
@@ -235,9 +236,13 @@ internal class Program
 
     public static void Main(string[] args)
     {
-        using var uow = new UnitOfWork(new ShopContext());
-        uow.InitDb();
+        var db = new ShopContext();
 
+        db.Database.EnsureDeleted();
+        db.Database.Migrate();
+
+        using var uow = new UnitOfWork(db);
+        
         try
         {
             CreateCategoriesAndProducts(uow);

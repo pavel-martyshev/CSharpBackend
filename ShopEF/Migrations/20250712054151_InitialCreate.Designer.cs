@@ -12,8 +12,8 @@ using ShopEF.Database;
 namespace ShopEF.Migrations
 {
     [DbContext(typeof(ShopContext))]
-    [Migration("20250703120921_CustomerBirthDate")]
-    partial class CustomerBirthDate
+    [Migration("20250712054151_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,7 +28,7 @@ namespace ShopEF.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ShopEF.Database.Model.Category", b =>
+            modelBuilder.Entity("ShopEF.Database.Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -56,7 +56,7 @@ namespace ShopEF.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("ShopEF.Database.Model.CategoryProduct", b =>
+            modelBuilder.Entity("ShopEF.Database.Models.CategoryProduct", b =>
                 {
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -71,16 +71,13 @@ namespace ShopEF.Migrations
                     b.ToTable("CategoryProduct");
                 });
 
-            modelBuilder.Entity("ShopEF.Database.Model.Customer", b =>
+            modelBuilder.Entity("ShopEF.Database.Models.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateOnly>("BirthDate")
-                        .HasColumnType("date");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -121,7 +118,7 @@ namespace ShopEF.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("ShopEF.Database.Model.Order", b =>
+            modelBuilder.Entity("ShopEF.Database.Models.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -152,7 +149,7 @@ namespace ShopEF.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("ShopEF.Database.Model.OrderProduct", b =>
+            modelBuilder.Entity("ShopEF.Database.Models.OrderProduct", b =>
                 {
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
@@ -170,7 +167,7 @@ namespace ShopEF.Migrations
                     b.ToTable("OrderProduct");
                 });
 
-            modelBuilder.Entity("ShopEF.Database.Model.Product", b =>
+            modelBuilder.Entity("ShopEF.Database.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -201,15 +198,15 @@ namespace ShopEF.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("ShopEF.Database.Model.CategoryProduct", b =>
+            modelBuilder.Entity("ShopEF.Database.Models.CategoryProduct", b =>
                 {
-                    b.HasOne("ShopEF.Database.Model.Category", "Category")
+                    b.HasOne("ShopEF.Database.Models.Category", "Category")
                         .WithMany("CategoryProduct")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("ShopEF.Database.Model.Product", "Product")
+                    b.HasOne("ShopEF.Database.Models.Product", "Product")
                         .WithMany("CategoryProduct")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -220,9 +217,9 @@ namespace ShopEF.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("ShopEF.Database.Model.Order", b =>
+            modelBuilder.Entity("ShopEF.Database.Models.Order", b =>
                 {
-                    b.HasOne("ShopEF.Database.Model.Customer", "Customer")
+                    b.HasOne("ShopEF.Database.Models.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -231,15 +228,15 @@ namespace ShopEF.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("ShopEF.Database.Model.OrderProduct", b =>
+            modelBuilder.Entity("ShopEF.Database.Models.OrderProduct", b =>
                 {
-                    b.HasOne("ShopEF.Database.Model.Order", "Order")
+                    b.HasOne("ShopEF.Database.Models.Order", "Order")
                         .WithMany("OrderProduct")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("ShopEF.Database.Model.Product", "Product")
+                    b.HasOne("ShopEF.Database.Models.Product", "Product")
                         .WithMany("OrderProduct")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -250,22 +247,22 @@ namespace ShopEF.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("ShopEF.Database.Model.Category", b =>
+            modelBuilder.Entity("ShopEF.Database.Models.Category", b =>
                 {
                     b.Navigation("CategoryProduct");
                 });
 
-            modelBuilder.Entity("ShopEF.Database.Model.Customer", b =>
+            modelBuilder.Entity("ShopEF.Database.Models.Customer", b =>
                 {
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("ShopEF.Database.Model.Order", b =>
+            modelBuilder.Entity("ShopEF.Database.Models.Order", b =>
                 {
                     b.Navigation("OrderProduct");
                 });
 
-            modelBuilder.Entity("ShopEF.Database.Model.Product", b =>
+            modelBuilder.Entity("ShopEF.Database.Models.Product", b =>
                 {
                     b.Navigation("CategoryProduct");
 

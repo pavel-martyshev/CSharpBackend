@@ -8,7 +8,7 @@ namespace ShopEF;
 
 internal class Program
 {
-    private static void CreateCategoriesAndProducts(IUnitOfWork uow)
+    private static void CreateCategoriesAndProducts(UnitOfWork uow)
     {
         var categories = new List<Category>
         {
@@ -94,7 +94,7 @@ internal class Program
         uow.Save();
     }
 
-    private static void CreateCustomersAndOrders(IUnitOfWork uow)
+    private static void CreateCustomersAndOrders(UnitOfWork uow)
     {
         var customers = new List<Customer>
         {
@@ -145,82 +145,47 @@ internal class Program
             }
         };
 
-        var products = uow.ProductRepository.GetAll();
-
         var orders = new List<Order>
         {
             new()
             {
                 Date = new DateTimeOffset(2024, 11, 3, 8, 15, 12, TimeSpan.FromHours(+1)),
-                Customer = customers[2],
-                OrderProduct = [
-                    new OrderProduct { Product = products[0], ProductCount = 3},
-                    new OrderProduct { Product = products[5], ProductCount = 1}
-                ]
+                Customer = customers[2]
             },
             new()
             {
                 Date = new DateTimeOffset(2023, 6, 20, 19, 47, 33, TimeSpan.FromHours(-4)),
-                Customer = customers[0],
-                OrderProduct = [
-                    new OrderProduct { Product = products[0], ProductCount = 1},
-                    new OrderProduct { Product = products[3], ProductCount = 4},
-                    new OrderProduct { Product = products[9], ProductCount = 1}
-                ]
+                Customer = customers[0]
             },
             new()
             {
                 Date = new DateTimeOffset(2025, 1, 15, 13, 5, 56, TimeSpan.FromHours(+9)),
-                Customer = customers[4],
-                OrderProduct = [
-                    new OrderProduct { Product = products[2], ProductCount = 1}
-                ]
+                Customer = customers[4]
             },
             new()
             {
                 Date = new DateTimeOffset(2022, 8, 29, 22, 10, 5, TimeSpan.FromHours(+3)),
-                Customer = customers[1],
-                OrderProduct = [
-                    new OrderProduct { Product = products[6], ProductCount = 2},
-                    new OrderProduct { Product = products[7], ProductCount = 1},
-                    new OrderProduct { Product = products[8], ProductCount = 2}
-                ]
+                Customer = customers[1]
             },
             new()
             {
                 Date = new DateTimeOffset(2024, 12, 31, 23, 59, 59, TimeSpan.FromHours(-2)),
-                Customer = customers[3],
-                OrderProduct = [
-                    new OrderProduct { Product = products[4], ProductCount = 7}
-                ]
+                Customer = customers[3]
             },
             new()
             {
                 Date = new DateTimeOffset(2025, 6, 1, 11, 11, 11, TimeSpan.FromHours(+5)),
-                Customer = customers[2],
-                OrderProduct = [
-                    new OrderProduct { Product = products[1], ProductCount = 1},
-                    new OrderProduct { Product = products[2], ProductCount = 7}
-                ]
+                Customer = customers[2]
             },
             new()
             {
                 Date = new DateTimeOffset(2023, 2, 14, 7, 30, 0, TimeSpan.Zero),
-                Customer = customers[1],
-                OrderProduct = [
-                    new OrderProduct { Product = products[0], ProductCount = 12},
-                    new OrderProduct { Product = products[3], ProductCount = 1},
-                    new OrderProduct { Product = products[5], ProductCount = 54}
-                ]
+                Customer = customers[1]
             },
             new()
             {
                 Date = new DateTimeOffset(2024, 7, 7, 17, 45, 30, TimeSpan.FromHours(-7)),
-                Customer = customers[4],
-                OrderProduct = [
-                    new OrderProduct { Product = products[9], ProductCount = 22},
-                    new OrderProduct { Product = products[8], ProductCount = 11}
-                ]
+                Customer = customers[4]
             }
         };
 
@@ -229,6 +194,37 @@ internal class Program
         foreach (var order in orders)
         {
             uow.OrderRepository.Create(order);
+        }
+
+        uow.Save();
+    }
+
+    private static void LinkProductsToOrder(UnitOfWork uow)
+    {
+        var products = uow.ProductRepository.GetAll();
+        var orders = uow.OrderRepository.GetAll();
+
+        var random = new Random();
+        var orderProducts = new List<OrderProduct>();
+
+        for (var i = 0; i < orders.Length; i++)
+        {
+            var allOrderProductsCount = random.Next(1, 3);
+
+            for (var j = 0; j < allOrderProductsCount; j++)
+            {
+                orderProducts.Add(new OrderProduct
+                {
+                    OrderId = orders[i].Id,
+                    ProductId = products[random.Next(0, 9)].Id,
+                    ProductsCount = random.Next(1, 15),
+                });
+            }
+        }
+
+        foreach (var orderProduct in orderProducts)
+        {
+            uow.OrderProductRepository.Create(orderProduct);
         }
 
         uow.Save();
@@ -261,6 +257,15 @@ internal class Program
             Console.WriteLine($"Произошла ошибка при создании покупателей и заказов{Environment.NewLine}{e}");
         }
 
+        try
+        {
+            LinkProductsToOrder(uow);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Произошла ошибка при привязке продуктов к заказам{Environment.NewLine}{e}");
+        }
+
         var topProduct = uow.ProductRepository.GetTopProduct();
 
         if (topProduct is null)
@@ -269,8 +274,7 @@ internal class Program
         }
         else
         {
-            Console.WriteLine(
-                $"Самый популярный товар - {topProduct.Name}. Количество заказов - {topProduct.OrdersQuantity}");
+            Console.WriteLine($"Самый популярный товар - {topProduct.Name}. Количество заказов - {topProduct.OrdersQuantity}");
         }
 
         var customersSpending = uow.CustomerRepository.GetCustomersSpending();
@@ -280,8 +284,7 @@ internal class Program
 
         foreach (var customerInfo in customersSpending)
         {
-            Console.WriteLine(
-                $"{customerInfo.FirstName} {customerInfo.MiddleName} {customerInfo.LastName} - {customerInfo.SpendingSum}");
+            Console.WriteLine($"{customerInfo.FirstName} {customerInfo.MiddleName} {customerInfo.LastName} - {customerInfo.SpendingSum}");
         }
 
         Console.WriteLine();

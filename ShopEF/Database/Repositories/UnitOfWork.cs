@@ -15,6 +15,8 @@ internal class UnitOfWork(DbContext db) : IUnitOfWork
 
     public OrderRepository OrderRepository => new(db);
 
+    public OrderProductRepository OrderProductRepository => new(db);
+
     public void Dispose()
     {
         if (_db.Database.CurrentTransaction != null)

@@ -13,9 +13,9 @@ public class ShopContext : DbContext
 
     public virtual DbSet<Order> Orders { get; set; }
 
-    public virtual DbSet<CategoryProduct> CategoryProduct { get; set; }
+    public virtual DbSet<CategoryProduct> CategoryProducts { get; set; }
 
-    public virtual DbSet<OrderProduct> OrderProduct { get; set; }
+    public virtual DbSet<OrderProduct> OrdersProducts { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
@@ -33,7 +33,7 @@ public class ShopContext : DbContext
                 .UsingEntity<CategoryProduct>();
 
             e.Property(c => c.Name)
-                    .HasMaxLength(100);
+                .HasMaxLength(100);
         });
 
         modelBuilder.Entity<Product>(b =>
@@ -47,10 +47,6 @@ public class ShopContext : DbContext
 
         modelBuilder.Entity<Order>(e =>
         {
-            e.HasMany(o => o.Products)
-                .WithMany(p => p.Orders)
-                .UsingEntity<OrderProduct>();
-
             e.Property(o => o.Date)
                 .HasColumnType("datetimeoffset(0)");
         });

@@ -10,11 +10,11 @@ internal class ProductRepository(DbContext db) : BaseRepository<Product>(db), IP
     public TopProductDto? GetTopProduct()
     {
         return _db.Set<OrderProduct>()
-            .GroupBy(op => op.Product.Name)
+            .GroupBy(op => op.ProductId)
             .Select(g => new TopProductDto
             {
-                Name = g.Key,
-                OrdersQuantity = g.Sum(op => op.ProductCount)
+                Name = g.First().Product.Name,
+                OrdersQuantity = g.Sum(op => op.ProductsCount)
             })
             .OrderByDescending(x => x.OrdersQuantity)
             .FirstOrDefault();

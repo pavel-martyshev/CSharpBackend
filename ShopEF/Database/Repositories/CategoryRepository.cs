@@ -14,8 +14,8 @@ internal class CategoryRepository(DbContext db) : BaseRepository<Category>(db), 
             {
                 Name = c.Name,
                 SoldProductsCount = c.Products
-                    .SelectMany(p => p.OrderProduct)
-                    .Sum(x => x.ProductCount)
+                    .SelectMany(p => p.OrderProducts)
+                    .Sum(x => x.ProductsCount)
             })
             .OrderByDescending(x => x.SoldProductsCount)
             .ToList();

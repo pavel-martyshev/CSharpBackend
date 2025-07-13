@@ -15,9 +15,9 @@ internal class CustomerRepository(DbContext db) : BaseRepository<Customer>(db), 
                 FirstName = c.FirstName,
                 MiddleName = c.MiddleName,
                 LastName = c.LastName,
-                SpendingSum = c.Orders
-                    .SelectMany(o => o.Products)
-                    .Sum(p => p.Price)
+                SpendingSum = Math.Round(c.Orders
+                    .SelectMany(o => o.OrderProducts)
+                    .Sum(op => op.Product.Price * op.ProductsCount), 2, MidpointRounding.AwayFromZero)
             })
             .ToList();
     }

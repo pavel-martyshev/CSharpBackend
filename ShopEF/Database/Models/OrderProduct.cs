@@ -1,12 +1,14 @@
-﻿namespace ShopEF.Database.Models;
+﻿using System.Diagnostics.Contracts;
 
-public class OrderProduct
+namespace ShopEF.Database.Models;
+
+public class OrderProduct : BaseModel
 {
+    public int ProductsCount { get; set; }
+
     public int OrderId { get; set; }
 
     public int ProductId { get; set; }
-
-    public int ProductCount { get; set; }
 
     public virtual Order Order { get; set; } = null!;
 

@@ -8,7 +8,5 @@ public class Order : BaseModel
 
     public virtual Customer Customer { get; set; } = null!;
 
-    public virtual List<Product> Products { get; set; } = [];
-
-    public virtual List<OrderProduct> OrderProduct { get; set; } = [];
+    public virtual List<OrderProduct> OrderProducts { get; set; } = [];
 }

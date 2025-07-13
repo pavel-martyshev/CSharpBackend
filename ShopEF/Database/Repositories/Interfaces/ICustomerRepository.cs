@@ -5,5 +5,5 @@ namespace ShopEF.Database.Repositories.Interfaces;
 
 internal interface ICustomerRepository : IRepository<Customer>
 {
-    public List<CustomerSpendingDto> GetCustomersSpending();
+    public List<CustomerSpendingDto> GetCustomersSpendings();
 }

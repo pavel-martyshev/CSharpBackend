@@ -277,7 +277,7 @@ internal class Program
             Console.WriteLine($"Самый популярный товар - {topProduct.Name}. Количество заказов - {topProduct.OrdersQuantity}");
         }
 
-        var customersSpending = uow.CustomerRepository.GetCustomersSpending();
+        var customersSpending = uow.CustomerRepository.GetCustomersSpendings();
 
         Console.WriteLine();
         Console.WriteLine("Траты каждого клиента за все время:");
@@ -289,7 +289,7 @@ internal class Program
 
         Console.WriteLine();
 
-        var categories = uow.CategoryRepository.GetCategoryWithSoldProducts();
+        var categories = uow.CategoryRepository.GetCategoriesWithSoldProducts();
 
         foreach (var category in categories)
         {

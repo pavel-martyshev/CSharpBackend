@@ -5,30 +5,75 @@ namespace ShopEF.Database.Repositories;
 
 internal class UnitOfWork(DbContext db) : IUnitOfWork
 {
-    private readonly DbContext _db = db;
+    private bool _disposed;
 
-    public CategoryRepository CategoryRepository => new(db);
+    private readonly DbContext _db = db ?? throw new ArgumentNullException(nameof(db));
 
-    public ProductRepository ProductRepository => new(db);
+    public CategoryRepository CategoryRepository
+    {
+        get
+        {
+            ObjectDisposedException.ThrowIf(_disposed, db);
+            return new CategoryRepository(db);
+        }
+    }
 
-    public CustomerRepository CustomerRepository => new(db);
+    public ProductRepository ProductRepository
+    {
+        get
+        {
+            ObjectDisposedException.ThrowIf(_disposed, db);
+            return new ProductRepository(db);
+        }
+    }
 
-    public OrderRepository OrderRepository => new(db);
+    public CustomerRepository CustomerRepository
+    {
+        get
+        {
+            ObjectDisposedException.ThrowIf(_disposed, db);
+            return new CustomerRepository(db);
+        }
+    }
 
-    public OrderProductRepository OrderProductRepository => new(db);
+    public OrderRepository OrderRepository
+    {
+        get
+        {
+            ObjectDisposedException.ThrowIf(_disposed, db);
+            return new OrderRepository(db);
+        }
+    }
+
+    public OrderProductRepository OrderProductRepository
+    {
+        get
+        {
+            ObjectDisposedException.ThrowIf(_disposed, db);
+            return new OrderProductRepository(db);
+        }
+    }
 
     public void Dispose()
     {
+        if (_disposed)
+        {
+            return;
+        }
+
         if (_db.Database.CurrentTransaction != null)
         {
             _db.Database.RollbackTransaction();
         }
 
         _db.Dispose();
+        _disposed = true;
     }
 
     public void Save()
     {
+        ObjectDisposedException.ThrowIf(_disposed, db);
+
         if (_db.Database.CurrentTransaction != null)
         {
             _db.Database.CommitTransaction();
@@ -39,11 +84,13 @@ internal class UnitOfWork(DbContext db) : IUnitOfWork
 
     public void BeginTransaction()
     {
+        ObjectDisposedException.ThrowIf(_disposed, db);
         _db.Database.BeginTransaction();
     }
 
     public void RollbackTransaction()
     {
+        ObjectDisposedException.ThrowIf(_disposed, db);
         _db.Database.RollbackTransaction();
     }
 }

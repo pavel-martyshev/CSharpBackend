@@ -7,9 +7,9 @@ namespace ShopEF.Database.Repositories;
 
 internal class CategoryRepository(DbContext db) : BaseRepository<Category>(db), ICategoryRepository
 {
-    public List<CategoryWithSoldProductsDto> GetCategoryWithSoldProducts()
+    public List<CategoryWithSoldProductsDto> GetCategoriesWithSoldProducts()
     {
-        return _dbSet
+        return DbSet
             .Select(c => new CategoryWithSoldProductsDto
             {
                 Name = c.Name,

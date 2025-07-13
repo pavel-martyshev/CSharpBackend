@@ -7,9 +7,9 @@ namespace ShopEF.Database.Repositories;
 
 internal class CustomerRepository(DbContext db) : BaseRepository<Customer>(db), ICustomerRepository
 {
-    public List<CustomerSpendingDto> GetCustomersSpending()
+    public List<CustomerSpendingDto> GetCustomersSpendings()
     {
-        return _dbSet
+        return DbSet
             .Select(c => new CustomerSpendingDto
             {
                 FirstName = c.FirstName,

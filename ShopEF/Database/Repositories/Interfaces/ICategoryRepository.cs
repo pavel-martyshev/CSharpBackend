@@ -5,5 +5,5 @@ namespace ShopEF.Database.Repositories.Interfaces;
 
 internal interface ICategoryRepository : IRepository<Category>
 {
-    public List<CategoryWithSoldProductsDto> GetCategoryWithSoldProducts();
+    public List<CategoryWithSoldProductsDto> GetCategoriesWithSoldProducts();
 }

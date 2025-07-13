@@ -9,7 +9,7 @@ internal class ProductRepository(DbContext db) : BaseRepository<Product>(db), IP
 {
     public TopProductDto? GetTopProduct()
     {
-        return _db.Set<OrderProduct>()
+        return Db.Set<OrderProduct>()
             .GroupBy(op => op.ProductId)
             .Select(g => new TopProductDto
             {

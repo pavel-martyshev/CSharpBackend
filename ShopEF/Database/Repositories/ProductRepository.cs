@@ -14,9 +14,9 @@ internal class ProductRepository(DbContext db) : BaseRepository<Product>(db), IP
             .Select(g => new TopProductDto
             {
                 Name = g.First().Product.Name,
-                OrdersQuantity = g.Sum(op => op.ProductsCount)
+                OrdersCount = g.Sum(op => op.ProductsCount)
             })
-            .OrderByDescending(x => x.OrdersQuantity)
+            .OrderByDescending(x => x.OrdersCount)
             .FirstOrDefault();
     }
 }

@@ -2,7 +2,6 @@
 using ShopEF.Database;
 using ShopEF.Database.Models;
 using ShopEF.Database.Repositories;
-using ShopEF.Database.Repositories.Interfaces;
 
 namespace ShopEF;
 
@@ -238,7 +237,7 @@ internal class Program
         db.Database.Migrate();
 
         using var uow = new UnitOfWork(db);
-        
+
         try
         {
             CreateCategoriesAndProducts(uow);
@@ -274,17 +273,17 @@ internal class Program
         }
         else
         {
-            Console.WriteLine($"Самый популярный товар - {topProduct.Name}. Количество заказов - {topProduct.OrdersQuantity}");
+            Console.WriteLine($"Самый популярный товар - {topProduct.Name}. Количество заказов - {topProduct.OrdersCount}");
         }
 
-        var customersSpending = uow.CustomerRepository.GetCustomersSpendings();
+        var customersSpendings = uow.CustomerRepository.GetCustomersSpendings();
 
         Console.WriteLine();
         Console.WriteLine("Траты каждого клиента за все время:");
 
-        foreach (var customerInfo in customersSpending)
+        foreach (var customerInfo in customersSpendings)
         {
-            Console.WriteLine($"{customerInfo.FirstName} {customerInfo.MiddleName} {customerInfo.LastName} - {customerInfo.SpendingSum}");
+            Console.WriteLine($"{customerInfo.FirstName} {customerInfo.MiddleName} {customerInfo.LastName} - {Math.Round(customerInfo.SpendingSum, 2, MidpointRounding.AwayFromZero)}");
         }
 
         Console.WriteLine();

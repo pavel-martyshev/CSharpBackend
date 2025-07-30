@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
-  <ItemGroup>
 	<Protobuf Include="Protos\greet.proto" GrpcServices="Client" />
 	<Protobuf Include="Protos\random_number.proto" GrpcServices="Client" />
 

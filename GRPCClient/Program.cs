@@ -1,4 +1,5 @@
-﻿using Grpc.Net.Client;
+﻿using Grpc.Core;
+using Grpc.Net.Client;
 using GRPCServer;
 
 namespace GRPCClient;
@@ -11,17 +12,33 @@ internal class Program
 
         // Greeter Client
         var greeterClient = new Greeter.GreeterClient(channel);
-        var greeterReply = await greeterClient.SayHelloAsync(new HelloRequest { Name = "Pavel" });
-        Console.WriteLine($"Greeter: {greeterReply.Message}");
+
+        try
+        {
+            var greeterReply = await greeterClient.SayHelloAsync(new HelloRequest { Name = "Pavel" });
+            Console.WriteLine(greeterReply.Message);
+        }
+        catch (RpcException e)
+        {
+            Console.WriteLine(e.Message);
+        }
 
         // RandomNumberFromRange Client
         var randomNumberClient = new RandomNumberFromRange.RandomNumberFromRangeClient(channel);
-        var randomNumberReply = await randomNumberClient.GetRandomNumberFromRangeAsync(new RandomNumberFromRangeRequest
-        {
-            StartNumber = 1,
-            EndNumber = 100
-        });
 
-        Console.WriteLine($"Random Number: {randomNumberReply.Message}");
+        try
+        {
+            var randomNumberReply = await randomNumberClient.GetRandomNumberFromRangeAsync(new RandomNumberFromRangeRequest
+            {
+                StartNumber = 1,
+                EndNumber = 100
+            });
+
+            Console.WriteLine(randomNumberReply.Message);
+        }
+        catch (RpcException e)
+        {
+            Console.WriteLine(e.Message);
+        }
     }
 }
